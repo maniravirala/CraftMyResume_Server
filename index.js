@@ -14,6 +14,9 @@ app.use(cors());
 // Routes
 app.use('/api/auth', userRoute);
 app.use('/api/profile', profileRoute);
+app.get('/', (req, res) => {
+    res.json({ message: 'API is working' });
+});
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
@@ -32,6 +35,6 @@ app.use((err, req, res, next) => {
 
 // Server
 const port = process.env.PORT || 8000;
-app.listen(port, () =>{
+app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 })
