@@ -14,14 +14,25 @@ app.use(cors());
 // Routes
 app.use('/api/auth', userRoute);
 app.use('/api/profile', profileRoute);
-app.get('/', (req, res) => {
-    res.json({ message: 'API is working' });
-});
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('MongoDB Connected'))
-    .catch(err => console.error('Failed to connect to MongoDB: ', err));
+    .then(() => {
+        console.log('MongoDB Connected')
+        app.get('/', (res) => {
+            res.json({ message: 'API is working' });
+        })
+    }
+    )
+    .catch(err => {
+        app.get('/', (res) => {
+            res.json({
+                message:
+                    'API is not working. MongoDB connection failed. Please check the connection string.'
+            });
+        })
+    }
+    );
 
 // Global Error Handler
 app.use((err, req, res, next) => {
