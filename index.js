@@ -2,17 +2,20 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-const userRoute = require('./routes/userRoute');
+const authRoute = require('./routes/authRoute');
 const profileRoute = require('./routes/profileRoute');
 
 const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:3000', 'https://craftedcareer.netlify.app'],
+}));
+    
 
 // Routes
-app.use('/api/auth', userRoute);
+app.use('/api/auth', authRoute);
 app.use('/api/profile', profileRoute);
 app.get('/', (req, res) => {
     res.json({ message: 'Crafted Career API is running' });
