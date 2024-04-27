@@ -39,8 +39,7 @@ exports.register = async (req, res, next) => {
     });
 
     res.cookie('access_token', token, {
-      maxAge: process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
-      httpOnly: true,
+      expires: new Date(Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
       secure: true,
       sameSite: 'None'
     });
@@ -76,8 +75,7 @@ exports.login = async (req, res, next) => {
     });
 
     res.cookie('access_token', token, {
-      maxAge: process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
-      httpOnly: true,
+      expires: new Date(Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
       secure: true,
       sameSite: 'None'
     });
@@ -100,7 +98,10 @@ exports.login = async (req, res, next) => {
 
 // Logout
 exports.logout = (req, res) => {
-  res.clearCookie('access_token');
+  res.clearCookie('access_token', {
+    secure: true,
+    sameSite: 'None'
+  });
   res.status(200).json({
     status: 'success',
     message: 'Logged out successfully'

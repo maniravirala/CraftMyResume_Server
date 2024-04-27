@@ -14,6 +14,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
     origin: ['http://localhost:3000', 'https://craftedcareer.netlify.app'],
+    credentials: true
 }));
 
 
@@ -34,7 +35,6 @@ app.get('/no-verify', (req, res) => {
     res.json({ message: 'No Verify' });
 }
 );
-
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
