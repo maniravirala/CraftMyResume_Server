@@ -12,13 +12,14 @@ exports.register = async (req, res, next) => {
   try {
     // Check if user already exists
     const userExists = await User.findOne({ email: req.body.email });
-    if (userExists) return next(new createError('User already exists', 400));
+    if (userExists) return next(new createError(400, 'User already exists'));
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 12);
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
     if (req.body.referralCode && req.body.referralCode.length > 0) {
       let response = await addCredit({ referralCode: req.body.referralCode });
-      if (response.status === 'fail') return next(new createError(response.message, 400));
+      if (response.status === 'fail') return next(new createError(400, response.message));
     }
 
     const newUser = await User.create({
@@ -37,6 +38,13 @@ exports.register = async (req, res, next) => {
       expiresIn: process.env.JWT_EXPIRES_IN
     });
 
+    res.cookie('access_token', token, {
+      maxAge: process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None'
+    });
+
     res.status(201).json({
       status: 'success',
       message: 'User registered successfully',
@@ -45,11 +53,10 @@ exports.register = async (req, res, next) => {
         _id: newUser._id,
         name: newUser.name,
         email: newUser.email,
-        code: newUser.code,
       }
     });
   } catch (error) {
-    return next(new createError(error.message, 400));
+    return next(new createError(400, error.message));
   }
 }
 
@@ -59,14 +66,22 @@ exports.login = async (req, res, next) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) return next(new createError('Invalid email', 401));
+    if (!user) return next(new createError(401, 'User not found'));
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) return next(new createError('Invalid password', 401));
+    if (!isPasswordValid) return next(new createError(401, 'Invalid password'));
 
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN
     });
+
+    res.cookie('access_token', token, {
+      maxAge: process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None'
+    });
+
 
     res.status(200).json({
       status: 'success',
@@ -79,7 +94,15 @@ exports.login = async (req, res, next) => {
       }
     });
   } catch (error) {
-    return next(new createError(error.message, 400));
+    return next(new createError(400, error.message));
   }
 }
 
+// Logout
+exports.logout = (req, res) => {
+  res.clearCookie('access_token');
+  res.status(200).json({
+    status: 'success',
+    message: 'Logged out successfully'
+  });
+}

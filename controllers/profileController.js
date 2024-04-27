@@ -6,11 +6,11 @@ const imagekit = require('../utils/imagekit');
 // exports.updateProfilePicture = async (req, res, next) => {
 //     try {
 //         if (!req.file) {
-//             return next(createError('Please upload a file', 400));
+//             return next(createError(400, 'Please upload a file'));
 //         }
 //         cloudinary.uploader.upload(req.file.path, async (err, result) => {
 //             if (err) {
-//                 return next(createError(err.message, 400));
+//                 return next(createError(400, 'An error occurred during file upload. Please try again.'));
 //             }
 
 //             const user = await ProfilePicture.findOne({ user: req.params.userId });
@@ -61,7 +61,7 @@ const imagekit = require('../utils/imagekit');
 exports.updateProfilePicture = async (req, res, next) => {
     try {
         if (!req.file) {
-            return next(new createError('Please upload a file', 400));
+            return next(new createError(400, 'Please upload a file'));
         }
 
         imagekit.upload({
@@ -120,7 +120,7 @@ exports.getProfilePicture = async (req, res, next) => {
         const profilePicture = await ProfilePicture.findOne({ user: userId });
 
         if (!profilePicture) {
-            return next( new createError('Profile picture not found'), 404);
+            return next( new createError(404, 'Profile picture not found'));
         }
 
         res.status(200).json({
@@ -128,7 +128,7 @@ exports.getProfilePicture = async (req, res, next) => {
             data: profilePicture
         });
     } catch (error) {
-        next(new createError(error.message, 400));
+        next(new createError(400, error.message));
     }
 }
 
@@ -138,7 +138,7 @@ exports.deleteProfilePicture = async (req, res, next) => {
         const user = await ProfilePicture.findOne({ user: userId });
 
         if (!user) {
-            return next(new createError('Profile picture not found'), 404);
+            return next(new createError(404, 'Profile picture not found'));
         }
         else {
             await imagekit.deleteFile(user.imagekitId).then(async () => {
@@ -160,6 +160,6 @@ exports.deleteProfilePicture = async (req, res, next) => {
         }
     }
     catch (error) {
-        next(new createError(error.message), 400);
+        next(new createError(400, error.message));
     }
 }
