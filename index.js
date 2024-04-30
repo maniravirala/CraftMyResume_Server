@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 
 const authRoute = require('./routes/authRoute');
 const profileRoute = require('./routes/profileRoute');  
+const mailRoute = require('./routes/mailRoute');
+const referRoute = require('./routes/referRoute');
 const verify = require('./middleware/verify');
 
 const app = express();
@@ -21,6 +23,8 @@ app.use(cors({
 // Routes
 app.use('/api/auth', authRoute);
 app.use('/api/profile', profileRoute);
+app.use('/api/mail', mailRoute);
+app.use('/api/refer', referRoute);
 app.get('/', (req, res) => {
     res.json({ message: 'Crafted Career API is running' });
 });

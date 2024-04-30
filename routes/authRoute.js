@@ -26,6 +26,8 @@ const RegisterLimiter = RateLimit({
 router.post('/register', RegisterLimiter, authController.register);
 router.post('/login', LoginLimiter, authController.login);
 router.post('/logout', authController.logout);
+router.post('/forgot-password', authController.forgotPassword);
+router.post('/reset-password/:token', authController.resetPassword);
 router.post('/generate', pdf.generatePdf);
 
 module.exports = router;

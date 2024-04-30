@@ -10,6 +10,15 @@ module.exports = async (req, res, next) => {
     try {
         const user = jwt.verify(token, process.env.JWT_SECRET);
 
+        // Check if token expired
+        if (user.exp < Date.now().valueOf() / 1000) {
+            res.clearCookie('access_token', {
+                secure: true,
+                sameSite: 'None'
+            });
+            return next(new createError(403, 'Token expired'));
+        }
+
         const isUser = await User.findById(user._id);
         if (!isUser) {
             res.clearCookie('access_token', {
