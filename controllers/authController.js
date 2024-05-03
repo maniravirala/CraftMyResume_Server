@@ -7,7 +7,7 @@ const referralCodeGenerator = require(newLocal);
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-const { deductCredit, addCredit } = require('./creditsController');
+const { addCredit } = require('./creditsController');
 
 // Register
 exports.register = async (req, res, next) => {
