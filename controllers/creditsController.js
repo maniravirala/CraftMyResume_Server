@@ -1,9 +1,9 @@
 const User = require('../models/userModel');
 
 // Deduct credit 
-const deductCredit = async ({ mail }) => {
+const deductCredit = async ({ email }) => {
     try {
-        const user = await User.findOne({ email: mail });
+        const user = await User.findOne({ email});
         if (!user) return { status: 'fail', message: 'User not found' }
 
         if (user.credits < 1) return { status: 'fail', message: 'Insufficient credits' };
@@ -30,4 +30,17 @@ const addCredit = async ({ referralCode }) => {
     }
 }
 
-module.exports = { deductCredit, addCredit };
+// getCredits
+const getCredits = async ({ email }) => {
+    try {
+        const user = await User.findOne({ email: email });
+        if (!user) return { status: 'fail', message: 'User not found' };
+        return { status: 'success', credits: user.credits };
+    }
+    catch (error) {
+        return { status: 'fail', message: error.message };
+    }
+}
+
+module.exports = { deductCredit, addCredit, getCredits };
+

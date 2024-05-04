@@ -52,8 +52,7 @@ exports.generatePdf = async (req, res, next) => {
                 downloadUrl: response.downloadUrl
             });
         }
-    } catch (error) {
-        console.log(error);
+    } catch (error) { 
         return next(new createError(400, 'Error generating PDF'));
     }
 }
@@ -103,7 +102,6 @@ async function sendEmail(email, name, pdfBlob) {
             pass: process.env.EMAIL_PASSWORD,
         },
     });
-
 
     const message = {
         from: process.env.EMAIL_USERNAME,

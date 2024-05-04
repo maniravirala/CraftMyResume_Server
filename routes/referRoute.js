@@ -37,6 +37,9 @@ router.get('/details', async (req, res, next) => {
         res.status(200).json({
             code: code,
             referredUsers: newReferredUsers,
+            credits: user.credits,
+            name: user.name,
+            email: user.email,
         });
     } catch (err) {
         return next(new createError(500, err.message));
