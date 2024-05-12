@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const newLocal = 'referral-code-generator';
 const referralCodeGenerator = require(newLocal);
 const nodemailer = require('nodemailer');
+const ejs = require('ejs');
+const fs = require('fs');
 require('dotenv').config();
 
 const { addCredit } = require('./creditsController');
@@ -133,16 +135,18 @@ exports.forgotPassword = async (req, res, next) => {
         pass: process.env.EMAIL_PASSWORD
       }
     });
+    
+    const forgotPasswordTemplate = fs.readFileSync('./utils/mail/forgotPassword.ejs', 'utf-8');
+    const link = `${process.env.WEB_URL}/reset-password/${token}`;
 
     const mailOptions = {
       from: process.env.EMAIL_USERNAME,
       to: email,
       subject: 'Password Reset',
-      html: `
-        <h2>Please click on the link below to reset your password</h2>
-        <p>${process.env.WEB_URL}/reset-password/${token}</p>
-      `
+      html: ejs.render(forgotPasswordTemplate, { link })
     };
+    
+    // <p>${process.env.WEB_URL}/reset-password/${token}</p>
 
     await transporter.sendMail(mailOptions);
 
