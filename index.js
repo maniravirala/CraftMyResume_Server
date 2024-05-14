@@ -7,6 +7,8 @@ const authRoute = require('./routes/authRoute');
 const profileRoute = require('./routes/profileRoute');  
 const mailRoute = require('./routes/mailRoute');
 const referRoute = require('./routes/referRoute');
+const messageRoute = require('./routes/messageRoute');
+const resumeRoute = require('./routes/resumeRoute');
 const verify = require('./middleware/verify');
 
 const app = express();
@@ -25,8 +27,11 @@ app.use('/api/auth', authRoute);
 app.use('/api/profile', profileRoute);
 app.use('/api/mail', mailRoute);
 app.use('/api/refer', referRoute);
+app.use('/api/message', messageRoute);
+app.use('/api/resume', resumeRoute);
+
 app.get('/', (req, res) => {
-    res.json({ message: 'Crafted Career API is running' });
+    res.json({ message: 'Resume Studio is working' });
 });
 
 // write the route with verify middleware and and other with no middleware
