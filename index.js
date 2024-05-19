@@ -17,7 +17,7 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://craftedcareer.netlify.app'],
+    origin: ['http://localhost:3000', 'https://resumestudio.netlify.app'],
     credentials: true
 }));
 

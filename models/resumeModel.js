@@ -9,11 +9,28 @@ const resumeSchema = new Schema({
     pdfPath: String,
     uniqueViews: { type: Number, default: 0 },
     views: { type: Number, default: 0 },
-    viewedBy: [{ type: String }] ,
+    viewedBy: [
+        {
+          name: String,
+          date: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
     downloads: { type: Number, default: 0 },
-
-    createdAt: { type: Date, default: Date.now },
-});
+    downloadedBy: [{ type: String }],
+    feedback: [
+        {
+          name: String,
+          feedback: String,
+          date: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
+}, { timestamps: true });
 
 const Resume = mongoose.model('Resume', resumeSchema);
 
